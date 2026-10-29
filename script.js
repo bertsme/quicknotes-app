@@ -6,8 +6,26 @@ const noteCategory = document.querySelector("#note-category");
 const notesList = document.querySelector("#notes-list");
 const noteCount = document.querySelector("#note-count");
 const errorMessage = document.querySelector("#error-message");
+const searchInput = document.querySelector("#search-input");
+const STORAGE_KEY = "quicknotes-notes";
 
-let notes = [];
+function loadNotes() {
+  try {
+    const storedNotes = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (!Array.isArray(storedNotes)) return [];
+
+    return storedNotes.filter((note) =>
+      note && typeof note.id === "string" &&
+      typeof note.text === "string" &&
+      typeof note.category === "string" &&
+      typeof note.createdAt === "string"
+    );
+  } catch {
+    return [];
+  }
+}
+
+let notes = loadNotes();
 
 function createNoteElement(note) {
   const card = document.createElement("li");
@@ -44,16 +62,23 @@ function render() {
   notesList.replaceChildren();
   updateNoteCount();
 
-  if (notes.length === 0) {
+  const query = searchInput.value.trim().toLocaleLowerCase();
+  const visibleNotes = notes.filter((note) =>
+    note.text.toLocaleLowerCase().includes(query)
+  );
+
+  if (visibleNotes.length === 0) {
     const emptyState = document.createElement("li");
     emptyState.className = "empty-state";
-    emptyState.textContent = "No notes yet. Add one above to get started.";
+    emptyState.textContent = notes.length === 0
+      ? "No notes yet. Add one above to get started."
+      : "No notes match your search.";
     notesList.append(emptyState);
     return;
   }
 
   const fragment = document.createDocumentFragment();
-  for (const note of notes) {
+  for (const note of visibleNotes) {
     fragment.append(createNoteElement(note));
   }
   notesList.append(fragment);
@@ -93,6 +118,7 @@ noteForm.addEventListener("submit", (event) => {
   };
 
   notes.push(note);
+  saveNotes();
   render();
   noteInput.value = "";
   noteInput.focus();
@@ -108,7 +134,18 @@ notesList.addEventListener("click", (event) => {
   if (!card) return;
 
   notes = notes.filter((note) => String(note.id) !== card.dataset.id);
+  saveNotes();
   render();
 });
+
+function saveNotes() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  } catch {
+    errorMessage.textContent = "Your browser could not save these notes.";
+  }
+}
+
+searchInput.addEventListener("input", render);
 
 render();
