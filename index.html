@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QuickNotes — Capture ideas as they come</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html" aria-label="QuickNotes home">QuickNotes</a>
+        <p>Capture ideas before they disappear.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel add-panel" aria-labelledby="add-heading">
+        <p class="eyebrow">Your space to think</p>
+        <h1 id="add-heading">Add a note</h1>
+        <form id="note-form">
+          <div class="field note-field">
+            <label for="note-input">What would you like to remember?</label>
+            <input id="note-input" name="note" type="text" placeholder="Write a note…" autocomplete="off">
+          </div>
+          <div class="field category-field">
+            <label for="note-category">Category</label>
+            <select id="note-category" name="category">
+              <option value="personal">Personal</option>
+              <option value="work">Work</option>
+              <option value="study">Study</option>
+            </select>
+          </div>
+          <button class="button button-primary" type="submit">Add note</button>
+        </form>
+        <p id="error-message" class="error-message" role="alert" aria-live="polite"></p>
+      </section>
+
+      <section class="panel notes-panel" aria-labelledby="notes-heading">
+        <div class="notes-heading-row">
+          <div>
+            <p class="eyebrow">Keep it close</p>
+            <h2 id="notes-heading">Your notes</h2>
+          </div>
+          <p id="note-count" class="note-count" aria-live="polite">You have no notes yet.</p>
+        </div>
+        <label class="visually-hidden" for="search-input">Search your notes</label>
+        <input id="search-input" class="search-input" type="search" placeholder="Search notes…" autocomplete="off">
+        <ul id="notes-list" class="notes-list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Small thoughts make a big difference.</p>
+    </footer>
+  </body>
+</html>
